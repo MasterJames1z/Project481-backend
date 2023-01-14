@@ -1,7 +1,9 @@
 from flask import Flask
 from flask_cors import CORS
 from sqlalchemy_utils.functions import database_exists, create_database
-from routes.auth_bp import AuthBlueprint
+
+from controller import authController
+from controller.authController import AuthController
 from models.database import db
 
 app = Flask(__name__)
@@ -16,10 +18,9 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-
-class FlaskApp:
-    app.register_blueprint(AuthBlueprint.auth_bp)
-
+@app.route('/login', methods=['POST'])
+def AuthLogin():
+    return AuthController.auth()
 
 if __name__ == '__main__':
     app.run(debug=False)
