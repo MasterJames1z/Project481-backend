@@ -12,7 +12,7 @@ parsed_data = pickle.load(open('C:/Users/NITRO5/OneDrive/เดสก์ท็�
 class AnimeController:
     @staticmethod
     def query_title():
-        query = request.args['title']
+        query = request.json['query']
         spell_corr = [spell.correction(w) for w in query.split()]
         score = bm25_title.transform(query)
         df_bm = pd.DataFrame(data=parsed_data)
@@ -24,7 +24,7 @@ class AnimeController:
 
     @staticmethod
     def query_description():
-        query = request.json['description']
+        query = request.json['query']
         spell_corr = [spell.correction(w) for w in query.split()]
         score = bm25_synopsis.transform(query)
         df_bm = pd.DataFrame(data=parsed_data)
