@@ -12,24 +12,24 @@ parsed_data = pickle.load(open('C:/Users/NITRO5/OneDrive/เดสก์ท็�
 class AnimeController:
     @staticmethod
     def query_title():
-        query = request.json['query']
+        query = request.get_json()['query']
         spell_corr = [spell.correction(w) for w in query.split()]
         score = bm25_title.transform(query)
         df_bm = pd.DataFrame(data=parsed_data)
         df_bm['bm25'] = list(score)
         df_bm['rank'] = df_bm['bm25'].rank(ascending=False)
-        df_bm = df_bm.nlargest(columns='bm25', n=10)
+        df_bm = df_bm.nlargest(columns='bm25', n=12)
         df_bm = df_bm.drop(columns='bm25', axis=1)
-        return jsonify({'query': query, 'spell_corr': spell_corr, 'content': df_bm.to_dict('records')}), 200
+        return df_bm.to_json(orient='records')
 
     @staticmethod
     def query_description():
-        query = request.json['query']
+        query = request.get_json()['query']
         spell_corr = [spell.correction(w) for w in query.split()]
         score = bm25_synopsis.transform(query)
         df_bm = pd.DataFrame(data=parsed_data)
         df_bm['bm25'] = list(score)
         df_bm['rank'] = df_bm['bm25'].rank(ascending=False)
-        df_bm = df_bm.nlargest(columns='bm25', n=10)
+        df_bm = df_bm.nlargest(columns='bm25', n=12)
         df_bm = df_bm.drop(columns='bm25', axis=1)
-        return jsonify({'query': query, 'spell_corr': spell_corr, 'content': df_bm.to_dict('records')}), 200
+        return df_bm.to_json(orient='records')

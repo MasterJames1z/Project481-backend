@@ -2,7 +2,7 @@ import pickle
 
 from resources.bm25 import BM25
 import pandas as pd
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from spellchecker import SpellChecker
 from sqlalchemy_utils.functions import database_exists, create_database
@@ -39,6 +39,14 @@ def AnimeTitle():
 @app.route('/animeDescription', methods=['POST'])
 def AnimeDescription():
     return AnimeController.query_description()
+
+@app.route('/correction', methods=['GET'])
+def correction():
+    query = request.args['query']
+    spell_corr = [spell.correction(w) for w in query.split()]
+    if spell_corr[0] == None:
+        return 'No correction'
+    return jsonify(' '.join(spell_corr))
 
 if __name__ == '__main__':
     app.run(debug=True)
